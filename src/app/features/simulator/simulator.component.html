@@ -1,0 +1,13 @@
+<div class="simulator">
+  <app-exposure-controls (settingsChange)="onSettingsChange($event)" />
+
+  <div class="exposure-result">
+    <p>EV effectif : {{ exposureResult().ev | number: '1.1-1' }}</p>
+    <p class="status" [class]="exposureResult().status">
+      {{ exposureResult().status }}
+    </p>
+  </div>
+
+  <app-exposure-preview [exposureResult]="exposureResult()" />
+
+</div>

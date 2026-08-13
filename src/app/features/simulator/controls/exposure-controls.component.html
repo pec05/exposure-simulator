@@ -1,0 +1,37 @@
+<div class="exposure-controls">
+  <div class="control">
+    <label for="iso">ISO : {{ isoValues[isoIndex()] }}</label>
+    <input
+      id="iso"
+      type="range"
+      min="0"
+      [max]="isoValues.length - 1"
+      [ngModel]="isoIndex()"
+      (ngModelChange)="onIsoChange($event)"
+    />
+  </div>
+
+  <div class="control">
+    <label for="aperture">Ouverture : f/{{ apertureValues[apertureIndex()] }}</label>
+    <input
+      id="aperture"
+      type="range"
+      min="0"
+      [max]="apertureValues.length - 1"
+      [ngModel]="apertureIndex()"
+      (ngModelChange)="onApertureChange($event)"
+    />
+  </div>
+
+  <div class="control">
+    <label for="shutter">Vitesse : {{ formatShutterSpeed(shutterSpeedValues[shutterIndex()]) }}</label>
+    <input
+      id="shutter"
+      type="range"
+      min="0"
+      [max]="shutterSpeedValues.length - 1"
+      [ngModel]="shutterIndex()"
+      (ngModelChange)="onShutterChange($event)"
+    />
+  </div>
+</div>
