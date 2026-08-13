@@ -1,3 +1,40 @@
+# Exposure Simulator
+
+Simulateur pédagogique d'exposition photographique. Visualise en temps réel
+l'impact de l'ISO, de l'ouverture et de la vitesse d'obturation sur une image,
+avec simulation du flou de bougé, de la profondeur de champ et du grain.
+
+## Stack
+
+- Angular 17+ (standalone components, signals)
+- Rendu via Canvas 2D API (pas de dépendance externe)
+- Aucun backend — projet 100% client, déployable en statique
+
+## Statut
+
+🚧 En développement
+
+## Lancer le projet
+
+\`\`\`bash
+npm install
+ng serve
+\`\`\`
+
+## Roadmap
+
+- [ ] Calcul EV (Exposure Value) pur
+- [ ] Sliders ISO / ouverture / vitesse
+- [ ] Rendu canvas — ajustement de luminosité
+- [ ] Effet grain (bruit ISO)
+- [ ] Effet profondeur de champ
+- [ ] Effet flou de bougé
+
+
+
+
+
+
 # ExposureSimulator
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.9.
