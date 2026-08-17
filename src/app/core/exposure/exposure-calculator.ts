@@ -26,11 +26,10 @@ export function applyIsoCompensation(baseEv: number, iso: number): number {
  * Détermine si l'exposition résultante est correcte, sous- ou surexposée
  * par rapport à l'EV cible standard (0, convention "sunny 16" simplifiée).
  */
-function determineStatus(effectiveEv: number, targetEv: number): ExposureStatus {
-  const diff = effectiveEv - targetEv;
-  if (Math.abs(diff) <= CORRECT_EXPOSURE_TOLERANCE) return 'correct';
+function determineStatus(evDelta: number): ExposureStatus {
+  if (Math.abs(evDelta) <= CORRECT_EXPOSURE_TOLERANCE) return 'correct';
   // effectiveEv < targetEv => réglages calibrés pour une scène plus sombre => trop de lumière captée
-  return diff > 0 ? 'underexposed' : 'overexposed';
+  return evDelta > 0 ? 'underexposed' : 'overexposed';
 }
 
 export function calculateExposure(
@@ -39,9 +38,11 @@ export function calculateExposure(
 ): ExposureResult {
   const baseEv = calculateBaseEv(settings.aperture, settings.shutterSpeed);
   const effectiveEv = applyIsoCompensation(baseEv, settings.iso);
+  const evDelta = effectiveEv - targetEv;
 
   return {
     ev : effectiveEv,
-    status: determineStatus(effectiveEv, targetEv),
+    evDelta,
+    status: determineStatus(evDelta),
   };
 }

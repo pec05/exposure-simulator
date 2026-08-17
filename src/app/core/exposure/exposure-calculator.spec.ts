@@ -33,5 +33,10 @@ describe('exposure-calculator', () => {
       const result = calculateExposure({ iso: 100, aperture: 16, shutterSpeed: 1 / 4000 });
       expect(result.status).toBe('underexposed');
     });
+    it('calcule un evDelta cohérent avec le status retourné', () => {
+      const result = calculateExposure({ iso: 100, aperture: 16, shutterSpeed: 1 / 4 });
+      expect(result.evDelta).toBeLessThan(0);
+      expect(result.status).toBe('overexposed');
+    });
   });
 });
