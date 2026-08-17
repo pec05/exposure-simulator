@@ -2,6 +2,7 @@ import { AfterViewInit, Component, effect, ElementRef, input, viewChild } from '
 import { ExposureResult, ExposureSettings } from '../../../core/exposure/exposure.model';
 import { applyBrightnessAdjustment } from '../rendering/canvas-renderer';
 import { applyGrain } from '../rendering/grain.effect';
+import { applyDepthOfField } from '../rendering/depth-of-field.effect';
 
 const SUNNY_16_EV = 15;
 
@@ -51,7 +52,8 @@ export class ExposurePreviewComponent implements AfterViewInit {
     canvas.width = this.image.width;
     canvas.height = this.image.height;
 
-    applyBrightnessAdjustment(ctx, this.image, result.evDelta);
-    applyGrain(ctx, settings.iso);
+    applyDepthOfField(ctx, this.image, settings.aperture); // 1. dessine l'image avec flou
+    applyBrightnessAdjustment(ctx, this.image, result.evDelta); // 2. ajuste la luminosité déjà présente
+    applyGrain(ctx, settings.iso); // 3. ajoute le grain par-dessus
   }
 }

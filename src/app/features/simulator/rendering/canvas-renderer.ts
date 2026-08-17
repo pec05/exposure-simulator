@@ -1,6 +1,5 @@
 /**
- * Ajuste la luminosité d'une image dessinée sur canvas selon un delta d'EV.
- * Un EV positif = image plus lumineuse, négatif = plus sombre.
+ * Ajuste la luminosité des pixels déjà présents sur le canvas (ne redessine pas l'image)
  */
 
 export function applyBrightnessAdjustment(
@@ -9,13 +8,6 @@ export function applyBrightnessAdjustment(
   evDelta: number
 ): void {
   const canvas = ctx.canvas;
-
-  // Reset et redessine l'image de base à chaque appel
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.drawImage(image, 0, 0);
-
-  // Chaque stop d'EV double/divise la luminosité perçue.
-  // On convertit ça en un facteur multiplicatif exploitable en pixels.
   const brightnessFactor = Math.pow(2, evDelta);
 
   const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
