@@ -1,8 +1,11 @@
 import { AfterViewInit, Component, effect, ElementRef, input, viewChild } from '@angular/core';
 import { ExposureResult, ExposureSettings } from '../../../core/exposure/exposure.model';
-import { applyBrightnessAdjustment } from '../rendering/canvas-renderer';
+import {
+  applyBrightnessAdjustmentInPlace,
+} from '../rendering/canvas-renderer';
 import { applyGrain } from '../rendering/grain.effect';
-import { applyDepthOfField } from '../rendering/depth-of-field.effect';
+import { applyDepthOfFieldInPlace } from '../rendering/depth-of-field.effect';
+import { applyMotionBlur } from '../rendering/motion-blur.effect';
 
 const SUNNY_16_EV = 15;
 
@@ -52,8 +55,9 @@ export class ExposurePreviewComponent implements AfterViewInit {
     canvas.width = this.image.width;
     canvas.height = this.image.height;
 
-    applyDepthOfField(ctx, this.image, settings.aperture); // 1. dessine l'image avec flou
-    applyBrightnessAdjustment(ctx, this.image, result.evDelta); // 2. ajuste la luminosité déjà présente
-    applyGrain(ctx, settings.iso); // 3. ajoute le grain par-dessus
+    applyMotionBlur(ctx, this.image, settings.shutterSpeed); // 1. dessine l'image avec bougé
+    applyDepthOfFieldInPlace(ctx, settings.aperture); // 2. floute ce qui est déjà sur le canvas
+    applyBrightnessAdjustmentInPlace(ctx, result.evDelta); // 3. ajuste la luminosité
+    applyGrain(ctx, settings.iso); // 4. ajoute le grain par-dessus
   }
 }

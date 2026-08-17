@@ -7,21 +7,24 @@ const MAX_BLUR_PX = 8; // flou maximal en pixels, à f/1.4
  * Plus l'ouverture est large (f petit), plus le flou est marqué.
  */
 
-export function applyDepthOfField(
-  ctx: CanvasRenderingContext2D,
-  image: HTMLImageElement,
-  aperture: number,
-): void {
+export function applyDepthOfFieldInPlace(ctx: CanvasRenderingContext2D, aperture: number): void {
   const canvas = ctx.canvas;
   const blurPx = calculateBlurAmount(aperture);
 
   if (blurPx === 0) return;
 
-  // On redessine l'image à travers un filtre CSS de flou natif du canvas
-  ctx.save();
+  // getImageData/putImageData ne supportent pas ctx.filter directement,
+  // donc on redessine le canvas sur lui-même à travers le filtre actif
+  const snapshot = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  const tempCanvas = document.createElement('canvas');
+  tempCanvas.width = canvas.width;
+  tempCanvas.height = canvas.height;
+  tempCanvas.getContext('2d')!.putImageData(snapshot, 0, 0);
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.filter = `blur(${blurPx}px)`;
-  ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
-  ctx.restore();
+  ctx.drawImage(tempCanvas, 0, 0);
+  ctx.filter = 'none';
 }
 
 function calculateBlurAmount(aperture: number): number {

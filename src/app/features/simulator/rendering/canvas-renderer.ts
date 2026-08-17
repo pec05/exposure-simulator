@@ -2,10 +2,9 @@
  * Ajuste la luminosité des pixels déjà présents sur le canvas (ne redessine pas l'image)
  */
 
-export function applyBrightnessAdjustment(
+export function applyBrightnessAdjustmentInPlace(
   ctx: CanvasRenderingContext2D,
-  image: HTMLImageElement,
-  evDelta: number
+  evDelta: number,
 ): void {
   const canvas = ctx.canvas;
   const brightnessFactor = Math.pow(2, evDelta);
@@ -14,7 +13,7 @@ export function applyBrightnessAdjustment(
   const pixels = imageData.data;
 
   for (let i = 0; i < pixels.length; i += 4) {
-    pixels[i] = clamp(pixels[i] * brightnessFactor);       // R
+    pixels[i] = clamp(pixels[i] * brightnessFactor); // R
     pixels[i + 1] = clamp(pixels[i + 1] * brightnessFactor); // G
     pixels[i + 2] = clamp(pixels[i + 2] * brightnessFactor); // B
     // pixels[i + 3] = alpha, inchangé
