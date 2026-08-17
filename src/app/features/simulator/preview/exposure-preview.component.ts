@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, effect, ElementRef, input, viewChild } from '@angular/core';
-import { ExposureResult } from '../../../core/exposure/exposure.model';
+import { ExposureResult, ExposureSettings } from '../../../core/exposure/exposure.model';
 import { applyBrightnessAdjustment } from '../rendering/canvas-renderer';
+import { applyGrain } from '../rendering/grain.effect';
 
 const SUNNY_16_EV = 15;
 
@@ -12,6 +13,7 @@ const SUNNY_16_EV = 15;
 })
 export class ExposurePreviewComponent implements AfterViewInit {
   readonly exposureResult = input.required<ExposureResult>();
+  readonly settings = input.required<ExposureSettings>();
 
   private readonly canvasRef = viewChild.required<ElementRef<HTMLCanvasElement>>('canvas');
   private image?: HTMLImageElement;
@@ -20,8 +22,9 @@ export class ExposurePreviewComponent implements AfterViewInit {
   constructor() {
     effect(() => {
       const result = this.exposureResult();
+      const settings = this.settings();
       if (this.imageLoaded) {
-        this.render(result.evDelta);
+        this.render(result, settings);
       }
     });
   }
@@ -32,7 +35,7 @@ export class ExposurePreviewComponent implements AfterViewInit {
 
     this.image.onload = () => {
       this.imageLoaded = true;
-      this.render(this.exposureResult().evDelta);
+      this.render(this.exposureResult(), this.settings());
     };
 
     this.image.onerror = (err) => {
@@ -40,7 +43,7 @@ export class ExposurePreviewComponent implements AfterViewInit {
     };
   }
 
-  private render(evDelta: number): void {
+  private render(result: ExposureResult, settings: ExposureSettings): void {
     const canvas = this.canvasRef().nativeElement;
     const ctx = canvas.getContext('2d');
     if (!ctx || !this.image) return;
@@ -48,6 +51,7 @@ export class ExposurePreviewComponent implements AfterViewInit {
     canvas.width = this.image.width;
     canvas.height = this.image.height;
 
-    applyBrightnessAdjustment(ctx, this.image, evDelta);
+    applyBrightnessAdjustment(ctx, this.image, result.evDelta);
+    applyGrain(ctx, settings.iso);
   }
 }
